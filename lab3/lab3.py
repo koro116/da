@@ -37,7 +37,7 @@ def framer():
 df = framer()
 
 default_state = {
-    "index": "VHI",
+    "index": "TCI",
     "region_name": list(cities.values())[0],
     "week_range": (1, 52),
     "year_range": (2000, 2021),
