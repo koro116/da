@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 from scipy.signal import filtfilt, iirfilter
 
-# ===== Параметри сигналу =====
 initialAmplitude = 1.0
 initialFrequency = 1.0
 initialPhase = 0.0
@@ -13,7 +12,6 @@ initialCutoffFrequency = 1.0
 t = np.arange(0.0, 10.0, 0.01)
 samplingFrequency = len(t) / (t[-1] - t[0])
 
-# ===== Масиви сигналів =====
 def generateHarmonic(t, A, f, phi):
     return A * np.sin(2 * np.pi * f * t + phi)
 
@@ -24,7 +22,6 @@ def applyLowPassFilter(sig, cutoff, fs, order=5):
     b, a = iirfilter(order, cutoff / (0.5 * fs), btype='low', ftype='butter')
     return filtfilt(b, a, sig)
 
-# ===== Налаштування візуального дизайну =====
 plt.rcParams.update({
     'figure.facecolor': '#F9F9F9',
     'axes.facecolor': 'white',
@@ -38,7 +35,6 @@ plt.rcParams.update({
 fig, axs = plt.subplots(2, 1, figsize=(10, 6), sharex=True)
 plt.subplots_adjust(left=0.12, bottom=0.38, right=0.85, hspace=0.4)
 
-# Заголовки та сітка
 axs[0].set_title('Гармоніка з шумом', fontsize=14, color='#333333')
 axs[1].set_title('Низькочастотний фільтр', fontsize=14, color='#333333')
 for ax in axs:
@@ -46,7 +42,6 @@ for ax in axs:
     ax.set_xlabel('Час, с')
     ax.set_ylabel('Амплітуда')
 
-# Початкові лінії з різними стилями
 clean_line, = axs[0].plot(t, generateHarmonic(t, initialAmplitude, initialFrequency, initialPhase),
                           color='#1f77b4', linewidth=2, linestyle='-')
 noise_line, = axs[0].plot(t, generateHarmonic(t, initialAmplitude, initialFrequency, initialPhase) + 
@@ -56,7 +51,6 @@ noise_line.set_visible(False)
 filtered_line, = axs[1].plot(t, generateHarmonic(t, initialAmplitude, initialFrequency, initialPhase),
                               color='#2ca02c', linewidth=2, linestyle=':')
 
-# Колір фонду для віджетів
 widget_bg = '#EAEAF2'
 ax_amp = plt.axes([0.12, 0.28, 0.6, 0.03], facecolor=widget_bg)
 ax_freq = plt.axes([0.12, 0.24, 0.6, 0.03], facecolor=widget_bg)
@@ -65,7 +59,6 @@ ax_nmean = plt.axes([0.12, 0.16, 0.6, 0.03], facecolor=widget_bg)
 ax_ncov = plt.axes([0.12, 0.12, 0.6, 0.03], facecolor=widget_bg)
 ax_cutoff = plt.axes([0.12, 0.08, 0.6, 0.03], facecolor=widget_bg)
 
-# Слайдери з палітрою
 s_amp = Slider(ax_amp, 'Amplitude', 0.1, 10.0, valinit=initialAmplitude, color='#1f77b4')
 s_freq = Slider(ax_freq, 'Frequency', 0.1, 10.0, valinit=initialFrequency, color='#ff7f0e')
 s_phase = Slider(ax_phase, 'Phase', 0.0, 2*np.pi, valinit=initialPhase, color='#2ca02c')
@@ -73,13 +66,11 @@ s_nmean = Slider(ax_nmean, 'Noise Mean', -1.0, 1.0, valinit=initialNoiseMean, co
 s_ncov = Slider(ax_ncov, 'Noise Cov', 0.0, 1.0, valinit=initialNoiseCovariance, color='#9467bd')
 s_cut = Slider(ax_cutoff, 'Cutoff Freq', 0.1, 5.0, valinit=initialCutoffFrequency, color='#8c564b')
 
-# CheckButtons та Reset
 ax_cb = plt.axes([0.76, 0.12, 0.12, 0.12], facecolor=widget_bg)
 cb = CheckButtons(ax_cb, ['Show Noise'], [False])
 ax_btn = plt.axes([0.76, 0.05, 0.12, 0.04], facecolor=widget_bg)
 btn = Button(ax_btn, 'Reset')
 
-# Оновлення графіку
 
 def update(val):
     A, f, phi = s_amp.val, s_freq.val, s_phase.val
